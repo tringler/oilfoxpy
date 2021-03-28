@@ -36,9 +36,9 @@ class api:
             self.login = False
             return False
 
-    def getSummary(self):
+    def getsummary(self):
         if hasattr(self, "access_token"):
-            self.RefreshToken()
+            self.getrefreshtoken()
             url = "https://api.oilfox.io/v4/summary"
             headers = {
                 "Content-type": "application/json",
@@ -59,7 +59,7 @@ class api:
             raise InvalidAuthToken
             return False
 
-    def refreshToken(self):
+    def getrefreshtoken(self):
         if hasattr(self, "access_token"):
             dectoken = jwt.decode(self.access_token, verify=False)
             ts = time.time()
