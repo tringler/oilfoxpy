@@ -23,8 +23,10 @@ class api():
             self.access_token = response['access_token']
             self.refreshtoken = response['refresh_token']
             return True
+        elif(response.status_code == 404):
+            raise oilfoxerror('Wrong e-mail')
         elif(response.status_code == 401):
-            raise oilfoxerror('Check Login Data')
+            raise oilfoxerror('Wrong password')
         else:
             self.login = False
             return False
