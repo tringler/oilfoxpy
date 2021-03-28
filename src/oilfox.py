@@ -32,7 +32,7 @@ class api():
             return False
 
 
-    def getSummery(self):
+    def getSummary(self):
         if(hasattr(self, 'access_token')):
             self.reqrefreshtoken()
             url= "https://api.oilfox.io/v4/summary"
