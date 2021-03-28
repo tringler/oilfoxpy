@@ -28,7 +28,7 @@ class api:
             return True
         elif response.status_code >= 500:
             raise ApiUnreachable
-        elif response.status_code == 404:
+        elif response.status_code == 404 or 400:
             raise InvalidMailAddress
         elif response.status_code == 401:
             raise InvalidPassword
@@ -38,7 +38,7 @@ class api:
 
     def getSummary(self):
         if hasattr(self, "access_token"):
-            self.reqrefreshtoken()
+            self.RefreshToken()
             url = "https://api.oilfox.io/v4/summary"
             headers = {
                 "Content-type": "application/json",
@@ -59,7 +59,7 @@ class api:
             raise InvalidAuthToken
             return False
 
-    def reqrefreshtoken(self):
+    def refreshToken(self):
         if hasattr(self, "access_token"):
             dectoken = jwt.decode(self.access_token, verify=False)
             ts = time.time()
@@ -79,44 +79,24 @@ class api:
                     self.refreshtoken = response["refresh_token"]
                     return True
                 else:
-                    raise oilfoxerror("failed tokenrefresh")
-
-
-class OilfoxError(Exception):
-    def __init__(self, *args):
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
-
-    def __str__(self):
-        print("calling str")
-        if self.message:
-            return "Oilfox, {0} ".format(self.message)
-        else:
-            return "Oilfox error"
+                    raise AuthTokenRefreshFailed
 
 
 class InvalidPassword(OilfoxError):
-    self.message = "Invalid password"
-    pass
+    """Invalid password"""
 
 
 class InvalidMailAddress(OilfoxError):
-    self.message = "Invalid e-mail address"
-    pass
+    """Invalid e-mail address"""
 
 
 class ApiUnreachable(OilfoxError):
-    self.message = "API unreachable"
-    pass
+    """API unreachable"""
 
 
 class AuthTokenRefreshFailed(OilfoxError):
-    self.message = "Token refresh failed"
-    pass
+    """AuthToken refresh failed"""
 
 
 class InvalidAuthToken(OilfoxError):
-    self.message = "AuthToken invalid"
-    pass
+    """AuthToken invalid or not created"""
